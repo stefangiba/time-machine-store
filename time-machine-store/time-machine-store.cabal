@@ -24,6 +24,9 @@ source-repository head
   location: https://github.com/githubuser/time-machine-store
 
 library
+  exposed-modules:
+      Caca
+      Something
   other-modules:
       Paths_time_machine_store
   hs-source-dirs:
