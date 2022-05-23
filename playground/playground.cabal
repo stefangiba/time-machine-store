@@ -31,7 +31,7 @@ library
       Chapter3.Lists
       Chapter3.ParametricPolymorphism
       Chapter3.Patterns
-      Chapter4.Maps
+      Chapter4.Containers
   other-modules:
       Paths_playground
   hs-source-dirs:

@@ -2,6 +2,8 @@
 
 module Chapter2.DataTypes where
 
+import           Control.Arrow (Arrow(first))
+
 data Client = GovOrg { clientId :: Integer, clientName :: String }
             | Company { clientId :: Integer
                       , clientName :: String
@@ -10,6 +12,28 @@ data Client = GovOrg { clientId :: Integer, clientName :: String }
                       }
             | Individual { clientId :: Integer, person :: Person }
   deriving (Show)
+
+instance Eq Client where
+  Individual clientId1 person1 == Individual clientId2 person2 =
+    (clientId1 == clientId2)
+    && (firstName person1 == firstName person2)
+    && (lastName person1 == lastName person2)
+  GovOrg clientId1 clientName1 == GovOrg clientId2 clientName2 =
+    (clientId1 == clientId2) && (clientName1 == clientName2)
+
+instance Ord Client where
+  Individual { person = p1 } `compare` Individual { person = p2 } =
+    compare (firstName p1 ++ lastName p1) (firstName p2 ++ lastName p2)
+  Individual {} `compare` _ = GT
+  _ `compare` Individual {} = LT
+  Company { clientName = c1 }
+    `compare` Company { clientName = c2 } = compare c1 c2
+  GovOrg { clientName = c1 }
+    `compare` GovOrg { clientName = c2 } = compare c1 c2
+  Company { clientName = c1 }
+    `compare` GovOrg { clientName = c2 } = compare c1 c2
+  GovOrg { clientName = c1 }
+    `compare` Company { clientName = c2 } = compare c1 c2
 
 data Person = Person { firstName :: String, lastName :: String }
   deriving Show
