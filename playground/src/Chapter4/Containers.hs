@@ -1,5 +1,4 @@
 {-# LANGUAGE LambdaCase #-}
-{-# LANGUAGE RecordWildCards #-}
 
 module Chapter4.Containers where
 
@@ -39,6 +38,7 @@ data ClientKind = GovOrgKind
                 | IndividualKind
   deriving Show
 
+-- EXERCISE 4.3
 instance Eq ClientKind where
   IndividualKind == IndividualKind = IndividualKind == IndividualKind
   IndividualKind == CompanyKind = IndividualKind /= CompanyKind
@@ -51,6 +51,7 @@ instance Eq ClientKind where
   GovOrgKind == CompanyKind = GovOrgKind /= CompanyKind
 
 instance Ord ClientKind where
+  IndividualKind `compare` IndividualKind = EQ
   IndividualKind `compare` _ = GT
   _ `compare` IndividualKind = LT
   CompanyKind `compare` GovOrgKind = LT
@@ -58,8 +59,8 @@ instance Ord ClientKind where
   GovOrgKind `compare` GovOrgKind = EQ
   CompanyKind `compare` CompanyKind = EQ
 
-classifyClients :: [Client] -> M.Map ClientKind (S.Set Client)
-classifyClients clients =
+classifyClients1 :: [Client] -> M.Map ClientKind (S.Set Client)
+classifyClients1 clients =
   let getClientSet :: ClientKind
                    -> M.Map ClientKind (S.Set Client)
                    -> Maybe (S.Set Client)
@@ -80,3 +81,16 @@ classifyClients clients =
             Just set -> go xs $ M.insert IndividualKind (S.insert x set) acc
             Nothing  -> go xs $ M.insert IndividualKind (S.singleton x) acc
   in go clients M.empty
+
+classifyClients2 :: [Client] -> M.Map ClientKind (S.Set Client)
+classifyClients2 clients =
+  let go clients companies govOrgs individuals = case clients of
+        []   -> M.insert IndividualKind (S.fromList individuals)
+          $ M.insert GovOrgKind (S.fromList govOrgs)
+          $ M.singleton CompanyKind (S.fromList companies)
+        x:xs -> case x of
+          GovOrg {}     -> go xs companies (x:govOrgs) individuals
+          Company {}    -> go xs (x:companies) govOrgs individuals
+          Individual {} -> go xs companies govOrgs (x:individuals)
+  in go clients [] [] []
+

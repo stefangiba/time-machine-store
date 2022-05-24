@@ -18,8 +18,20 @@ instance Eq Client where
     (clientId1 == clientId2)
     && (firstName person1 == firstName person2)
     && (lastName person1 == lastName person2)
+  Individual {} == GovOrg {} = False
+  Individual {} == Company {} = False
   GovOrg clientId1 clientName1 == GovOrg clientId2 clientName2 =
     (clientId1 == clientId2) && (clientName1 == clientName2)
+  GovOrg {} == Individual {} = False
+  GovOrg {} == Company {} = False
+  Company clientId1 clientName1 person1 duty1
+    == Company clientId2 clientName2 person2 duty2 = (clientId1 == clientId2)
+    && (firstName person1 == firstName person2)
+    && (lastName person1 == lastName person2)
+    && (clientName1 == clientName2)
+    && (duty1 == duty2)
+  Company {} == Individual {} = False
+  Company {} == GovOrg {} = False
 
 instance Ord Client where
   Individual { person = p1 } `compare` Individual { person = p2 } =

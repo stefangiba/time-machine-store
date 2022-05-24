@@ -120,13 +120,13 @@ compareClient c1 c2 = compare (clientName c1) (clientName c2)
 
 listOfClients :: [Client]
 listOfClients =
-  [ Individual 2 (Person "H.G." "Wells")
-  , GovOrg 3 "NTTF"
+  [ Individual 1 (Person "H.G." "Wells")
+  , GovOrg 2 "NTTF"
+  , Company 3 "Wormhole Inc." (Person "Karl" "Schwarzschild") "Physicist"
   , Company 4 "Wormhole Inc." (Person "Karl" "Schwarzschild") "Physicist"
-  , Company 5 "Wormhole Inc." (Person "Karl" "Schwarzschild") "Physicist"
-  , Company 6 "Boring Company" (Person "Elon" "Musk") "CEO"
-  , Individual 7 (Person "Doctor" "")
-  , Individual 8 (Person "Sarah" "Jane")]
+  , Company 5 "Boring Company" (Person "Elon" "Musk") "CEO"
+  , Individual 6 (Person "Doctor" "")
+  , Individual 7 (Person "Sarah" "Jane")]
 
 companyDutiesAnalytics :: [Client] -> [String]
 companyDutiesAnalytics = map (duty . head)
