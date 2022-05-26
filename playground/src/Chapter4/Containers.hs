@@ -2,10 +2,12 @@
 
 module Chapter4.Containers where
 
+import           Chapter2.DataTypes (Client(..))
+import           Chapter3.Lists (listOfClients)
 import qualified Data.Map as M
 import qualified Data.Set as S
-import           Chapter3.Lists (listOfClients)
-import           Chapter2.DataTypes (Client(..))
+import           Data.Tree
+import qualified Debug.Trace as Debug
 
 -- MAPS
 insertWithAlter :: Ord k => k -> a -> M.Map k a -> M.Map k a
@@ -94,3 +96,19 @@ classifyClients2 clients =
           Individual {} -> go xs companies govOrgs (x:individuals)
   in go clients [] [] []
 
+-- TREES
+preOrder :: (Show a, Show b) => (a -> b) -> Tree a -> [b]
+preOrder f (Node v subtrees) =
+  let subTreesTraversed = concat $ map (preOrder f) subtrees
+  in f v:subTreesTraversed
+
+postOrder :: (Show a, Show b) => (a -> b) -> Tree a -> [b]
+postOrder f (Node v subtrees) =
+  let subTreesTraversed = concat $ map (postOrder f) subtrees
+  in Debug.trace
+       ("so far: " ++ show v ++ " " ++ show subTreesTraversed)
+       subTreesTraversed
+     ++ [f v]
+
+pictureTree :: Tree Integer
+pictureTree = Node 1 [Node 2 [Node 3 [], Node 4 [], Node 5 []], Node 6 []]
